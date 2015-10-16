@@ -51,7 +51,10 @@ def parse_tolerance(s):
         return None
 
 def within_tolerance(desired, tolerance_percent, actual):
-    return abs(actual - desired)/desired <= tolerance_percent/100
+	if desired == 0:
+		return actual == desired
+	else:
+		return abs(actual - desired)/desired <= tolerance_percent/100
 
 class FilteringPage(object):
     def __init__(self, r):
