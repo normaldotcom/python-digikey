@@ -1,11 +1,16 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import division
+import code
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
+from bs4 import Comment
 
+
+
+# EMZ TODO: need to handle the mu symbol properly
 
 def parse_number(s):
+    print("Parsing number " + str(s.encode('utf-8')))
     s = s.strip()
     if ' ' in s: # deal with '2000V (2kV)'
         s = s[:s.index(' ')]
@@ -25,6 +30,7 @@ def parse_number(s):
     return float(s) * mult
 
 def parse_tolerance(s):
+    print("Parsing tolerance " + str(s))
     def parse_percentage(s):
         s = s.strip()
         assert s[-1] == u'%'
@@ -32,7 +38,7 @@ def parse_tolerance(s):
     
     s = s.strip()
     
-    print s,
+    #print (s,)
     
     if s == u'Jumper':
         print (1, 1)
@@ -44,10 +50,10 @@ def parse_tolerance(s):
     elif u',' in s:
         left, right = s.split(u',')
         x = (1+parse_percentage(left), 1+parse_percentage(right))
-        print tuple(sorted(x))
+        print(tuple(sorted(x)))
         return tuple(sorted(x))
     else:
-        print repr(s)
+        print(repr(s))
         return None
 
 def within_tolerance(desired, tolerance_percent, actual):
@@ -61,9 +67,22 @@ class FilteringPage(object):
         form = r.html.find('form', dict(name='attform'))
         table = form.table
         params = [th.string for th in table.tr.findAll('th')]
-        #print params
+        print(params)
 
-        selects = [td.select for td in table.tr.findNextSibling().findAll('td', recursive=False)]
+        #selects = [td.select for td in table.tr.findNextSibling().findAll('td', recursive=False)]
+        tablecells = table.tr.findNextSibling().findAll('select', recursive=True)
+        selects = {}
+        ctr = 0
+#        for cell in tablecells:
+#            selects[ctr] = cell.findAll('option') 
+#            ctr = ctr + 1
+        selects = tablecells
+
+#        vars = globals()
+#        vars.update(locals())
+#        shell=code.InteractiveConsole(vars)
+#        shell.interact()
+ 
         assert len(selects) == len(params)
         
         self.params = params
@@ -74,10 +93,13 @@ class FilteringPage(object):
 
     def produce_filter_options(self, name, func):
         i = self.params.index(name)
-        sel = self.selects[i]
-        res = [(sel['name'], option['value'])
-            for option in sel.findAll('option', recursive=False)
-            if func(' '.join(x for x in option if not isinstance(x, BeautifulSoup.Comment)))]
+        selected = self.selects[i]
+
+        print(selected['name'])
+
+        res = [(selected['name'], option['value'])
+           for option in selected.findAll('option', recursive=True)
+            if func(' '.join(x for x in option if not isinstance(x, Comment)))]
         if not res:
             assert False, 'filter matched nothing'
         return res

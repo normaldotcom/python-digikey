@@ -31,14 +31,18 @@ options.extend(fp.produce_filter_options('Resistance (Ohms)',
     lambda s: digikey.within_tolerance(digikey.parse_number(args.resistance), args.error, digikey.parse_number(s))))
 options.extend(fp.produce_filter_options('Package / Case',
     lambda s: s.strip().startswith(args.package) or args.package == 'ANY'))
-def meets_tolerance((sup, inf)):
+
+# emz python3 can't pass tuples as tuples, so unpack it
+def meets_tolerance(sup_inf):
+    sup, inf = sup_inf
     return sup >= 1-args.tolerance/100 and inf <= 1+args.tolerance/100
+
 options.extend(fp.produce_filter_options('Tolerance',
     lambda s: meets_tolerance(digikey.parse_tolerance(s))))
 
 url = r.get_new_url(options=options)
-print url
+print(url)
 
 r2 = robot.Robot.start(url)
 rp = digikey.FilteringPage(r2)
-print rp.first_part_number
+print(rp.first_part_number)

@@ -30,11 +30,11 @@ options.extend(fp.produce_filter_options('Inductance',
     lambda s: digikey.parse_number(s) is not None and digikey.within_tolerance(digikey.parse_number(args.inductance), args.tolerance, digikey.parse_number(s))))
 options.extend(fp.produce_filter_options('Package / Case',
     lambda s: s.strip().startswith(args.package) or args.package == 'ANY'))
-print options
+print(options)
 
 url = r.get_new_url(options=options)
-print url
+print(url)
 
 r2 = robot.Robot.start(url)
 rp = digikey.FilteringPage(r2)
-print rp.first_part_number
+print(rp.first_part_number)

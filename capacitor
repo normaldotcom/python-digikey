@@ -38,6 +38,7 @@ options.append(('stock', 1))
 options.append(('ColumnSort', 1000011)) # XXX does this change?
 options.extend(fp.produce_filter_options('Capacitance',
     lambda s: digikey.parse_number(s) >= desired if args.at_least else digikey.within_tolerance(desired, args.tolerance, digikey.parse_number(s))))
+print("Voltage requested: " + str(args.voltage))
 options.extend(fp.produce_filter_options('Voltage - Rated',
     lambda s: digikey.parse_number(s) >= args.voltage))
 options.extend(fp.produce_filter_options('Package / Case',
@@ -45,8 +46,8 @@ options.extend(fp.produce_filter_options('Package / Case',
 options.extend(fp.produce_filter_options('Temperature Coefficient',
 	lambda s: (not s.strip().startswith('Y5V')) and (s.strip().startswith(args.coefficient) or args.coefficient == 'ANY')))
 url = r.get_new_url(options=options)
-print url
+print(url)
 
 r2 = robot.Robot.start(url)
 rp = digikey.FilteringPage(r2)
-print rp.first_part_number
+print(rp.first_part_number)
