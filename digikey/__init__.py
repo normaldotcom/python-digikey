@@ -30,7 +30,7 @@ def parse_number(s):
     return float(s) * mult
 
 def parse_tolerance(s):
-    print("Parsing tolerance " + str(s))
+#    print("Parsing tolerance " + str(s))
     def parse_percentage(s):
         s = s.strip()
         assert s[-1] == u'%'
