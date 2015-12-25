@@ -10,7 +10,7 @@ from bs4 import Comment
 # EMZ TODO: need to handle the mu symbol properly
 
 def parse_number(s):
-    print("Parsing number " + str(s.encode('utf-8')))
+#    print("Parsing number " + str(s.encode('utf-8')))
     s = s.strip()
     if ' ' in s: # deal with '2000V (2kV)'
         s = s[:s.index(' ')]
