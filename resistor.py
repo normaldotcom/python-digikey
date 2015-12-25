@@ -1,10 +1,9 @@
 #!/usr/bin/python
 
-from __future__ import division
 
 import argparse
 
-from digikey import robot
+import robot
 import digikey
 
 class FindComponent:
